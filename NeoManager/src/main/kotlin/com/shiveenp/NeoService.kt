@@ -6,17 +6,14 @@ import org.springframework.stereotype.Service
 import org.springframework.web.client.RestTemplate
 
 @Service
-class NeoService {
+class NeoService(
+        val neoUriService: NeoUriService,
+        val restTemplate: RestTemplate) {
     companion object {
         val LOG = LoggerFactory.getLogger(NeoController::class.java.name)
     }
 
-    val neoUri = "https://api.nasa.gov/neo/rest/v1/neo/browse?api_key=f3fQwK3Kh2tBAeOc8Tn9H9B6MPmz39FGCwAtgLyt"
-    val restTemplate = RestTemplate()
-
-    fun getNeoJson() = restTemplate.getForObject(neoUri, String::class.java)
-
-    fun createNearEarthObject(): NearEarthObject? {
-        return restTemplate.getForObject("https://api.nasa.gov/neo/rest/v1/neo/2021277?api_key=f3fQwK3Kh2tBAeOc8Tn9H9B6MPmz39FGCwAtgLyt", NearEarthObject::class.java)
+    fun getNeoById(id: String): NearEarthObject? {
+        return restTemplate.getForObject(neoUriService.getNeoDataByIdUri(id), NearEarthObject::class.java)
     }
 }
