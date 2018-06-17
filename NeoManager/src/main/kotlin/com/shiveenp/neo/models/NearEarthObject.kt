@@ -6,21 +6,21 @@ import com.fasterxml.jackson.annotation.JsonProperty
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class NearEarthObject(
         @JsonProperty("links")
-        val selfLink: Links,
+        val selfLink: Links?,
         @JsonProperty("neo_reference_id")
-        val neoRefId: Int,
+        val neoRefId: Int?,
         @JsonProperty("name")
-        val name: String,
+        val name: String?,
         @JsonProperty("nasa_jpl_url")
-        val nasaJplUrl: String,
+        val nasaJplUrl: String?,
         @JsonProperty("absolute_magnitude_h")
-        val absoluteMagnitudeH: Double,
+        val absoluteMagnitudeH: Double?,
         @JsonProperty("estimated_diameter")
-        val estimatedDiameter: EstimatedDiameter,
+        val estimatedDiameter: EstimatedDiameter?,
         @JsonProperty("is_potentially_hazardous_asteroid")
-        val isPotentiallyHazardousAsteroid: Boolean,
+        val isPotentiallyHazardousAsteroid: Boolean?,
         @JsonProperty("close_approach_data")
-        val closestApproachData: List<ClosestApproachData>,
+        val closestApproachData: List<ClosestApproachData>?,
         @JsonProperty("orbital_data")
-        val orbitalData: OrbitalData
+        val orbitalData: OrbitalData?
 )

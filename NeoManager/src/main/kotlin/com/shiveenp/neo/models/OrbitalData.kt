@@ -6,39 +6,39 @@ import com.fasterxml.jackson.annotation.JsonProperty
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class OrbitalData(
         @JsonProperty("orbit_id")
-        val orbitId: Int,
+        val orbitId: Int?,
         @JsonProperty("orbit_determination_date")
-        val orbitDeterminationDate: String,
+        val orbitDeterminationDate: String?,
         @JsonProperty("orbit_uncertainty")
-        val orbitUncertainity: Double,
+        val orbitUncertainity: Double?,
         @JsonProperty("minimum_orbit_intersection")
-        val minOrbitIntersection: Double,
+        val minOrbitIntersection: Double?,
         @JsonProperty("jupiter_tisserand_invariant")
-        val jupiterTisserandInvariant: Double,
+        val jupiterTisserandInvariant: Double?,
         @JsonProperty("epoch_osculation")
-        val epochOsculation: Double,
+        val epochOsculation: Double?,
         @JsonProperty("eccentricity")
-        val eccentricity: Double,
+        val eccentricity: Double?,
         @JsonProperty("semi_major_axis")
-        val semiMajorAxis: Double,
+        val semiMajorAxis: Double?,
         @JsonProperty("inclination")
-        val inclination: Double,
+        val inclination: Double?,
         @JsonProperty("ascending_node_longitude")
-        val ascendingNodeLongitude: Double,
+        val ascendingNodeLongitude: Double?,
         @JsonProperty("orbital_period")
-        val orbitalPeriod: Double,
+        val orbitalPeriod: Double?,
         @JsonProperty("perihelion_distance")
-        val perihelionDistance: Double,
+        val perihelionDistance: Double?,
         @JsonProperty("perihelion_argument")
-        val periHelionArgument: Double,
+        val periHelionArgument: Double?,
         @JsonProperty("aphelion_distance")
-        val aphelionDistance: Double,
+        val aphelionDistance: Double?,
         @JsonProperty("perihelion_time")
-        val perihelionTime: Double,
+        val perihelionTime: Double?,
         @JsonProperty("mean_anomaly")
-        val meanAnomaly: Double,
+        val meanAnomaly: Double?,
         @JsonProperty("mean_motion")
-        val meanMotion: Double,
+        val meanMotion: Double?,
         @JsonProperty("equinox")
-        val equinox: String
+        val equinox: String?
 )

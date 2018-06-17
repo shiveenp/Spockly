@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component
 @ConfigurationProperties("neomanager")
 data class NeoManagerProperties(
         var baseUri: String = "",
-        var baseBrowseUri: String = "",
+        var baseBrowseHost: String = "",
         var getByIdUri: String = "",
         var host: String = "",
         var apiKey: String = ""

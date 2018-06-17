@@ -2,6 +2,7 @@ package com.shiveenp
 
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import org.springframework.util.LinkedMultiValueMap
 import org.springframework.web.util.UriComponentsBuilder
 import java.net.URI
 
@@ -12,6 +13,7 @@ class NeoUriService(
         val LOG = LoggerFactory.getLogger(NeoUriService::class.java.name)
         const val HTTPS_SCHEME = "https"
         const val API_KEY_PARAM_NAME = "api_key"
+        const val DEFAULT_PAGE_SIZE = "20"
     }
 
 
@@ -23,10 +25,23 @@ class NeoUriService(
                 .path("/{id}")
                 .buildAndExpand(id)
                 .toUri()
-        LOG.debug("URI string to getById is: {}", uri)
+        LOG.debug("URI string for getNeoDataByIdUri is: {}", uri)
         return uri
     }
 
-    fun getNeoDataByPageUri(page: Int) = neoManagerProperties.baseBrowseUri + "?page=" + page + "&size=20&api_key=" + neoManagerProperties.apiKey
+    fun getNeoBrowseUriByPage(page: String): URI {
+        val queryParams = LinkedMultiValueMap<String, String>()
+        queryParams["page"] = page
+        queryParams["size"] = DEFAULT_PAGE_SIZE
+        queryParams["api_key"] = neoManagerProperties.apiKey
+        val uri = UriComponentsBuilder.newInstance()
+                .scheme(HTTPS_SCHEME)
+                .host(neoManagerProperties.baseBrowseHost)
+                .queryParams(queryParams)
+                .buildAndExpand()
+                .toUri()
+        LOG.debug("URI string for getNeoBrowseUriByPage is {}", uri)
+        return uri
+    }
 }
 

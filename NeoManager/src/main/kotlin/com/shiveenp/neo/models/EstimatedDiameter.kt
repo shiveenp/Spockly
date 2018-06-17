@@ -6,5 +6,5 @@ import com.fasterxml.jackson.annotation.JsonProperty
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class EstimatedDiameter(
         @JsonProperty("kilometers")
-        val kilometers: Kilometers
+        val kilometers: Kilometers?
 )
