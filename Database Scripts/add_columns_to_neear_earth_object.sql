@@ -1,5 +1,5 @@
-ALTER table near_earth_object
-  add column neo_reference_id int,
+CREATE table near_earth_object(
+  add column neo_reference_id int unique,
   add column name varchar(30),
   add column nasa_jpl_url varchar(50),
   add column absolute_magnitude_h smallint,
@@ -32,4 +32,5 @@ ALTER table near_earth_object
   add column perihelion_time real,
   add column mean_anomaly real,
   add column mean_motion real,
-  add column equinox real;
+  add column equinox real
+  );

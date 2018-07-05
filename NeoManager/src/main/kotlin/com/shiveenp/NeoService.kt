@@ -7,6 +7,13 @@ import com.shiveenp.neo.models.NeoWithPageMetadata
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestTemplate
+import org.springframework.web.reactive.function.BodyInserter
+import org.springframework.web.reactive.function.server.ServerRequest
+import org.springframework.web.reactive.function.server.ServerResponse
+import org.springframework.web.reactive.function.server.ServerResponse.ok
+import org.springframework.web.reactive.function.server.bodyToServerSentEvents
+import reactor.core.publisher.Mono
+import reactor.core.publisher.toMono
 
 @Service
 class NeoService(
@@ -14,18 +21,23 @@ class NeoService(
         val restTemplate: RestTemplate,
         val nearEarthObjectRepository: NearEarthObjectRepository) {
     companion object {
-        val LOG = LoggerFactory.getLogger(NeoController::class.java.name)
         const val START_PAGE = "0"
     }
+//
+//    fun getNeoById(id: String): NearEarthObject? {
+//        return restTemplate.getForObject(neoUriService.getNeoDataByIdUri(id), NearEarthObject::class.java)
+//    }
 
-    fun getNeoById(id: String): NearEarthObject? {
-        return restTemplate.getForObject(neoUriService.getNeoDataByIdUri(id), NearEarthObject::class.java)
+    fun getNeoById(request: ServerRequest): Mono<ServerResponse> {
+        val id = request.pathVariable("id")
+        return ok()
+            .bodyToServerSentEvents(
+                restTemplate.getForObject(neoUriService.getNeoDataByIdUri(id), NearEarthObject::class.java).toMono())
     }
 
     fun saveNeoInTheDbById(id: String) {
         val nearEarthObjectData: NearEarthObjectData? = createNearEarthDataObjectFromNeoObject(restTemplate.getForObject(neoUriService.getNeoDataByIdUri(id), NearEarthObject::class.java))
         val nearEarthObjectSaved = nearEarthObjectRepository.save(nearEarthObjectData)
-        LOG.info("NearEarthObject saved in the db is {}", nearEarthObjectSaved)
     }
 
     fun saveNeoInDbByObject(nearEarthObject: NearEarthObject) {
