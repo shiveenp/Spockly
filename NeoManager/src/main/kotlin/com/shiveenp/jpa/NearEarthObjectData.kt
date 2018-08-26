@@ -1,5 +1,6 @@
 package com.shiveenp.jpa
 
+import com.shiveenp.neo.models.NearEarthObject
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.Id
@@ -78,3 +79,45 @@ data class NearEarthObjectData(
         @Column(name = "equinox")
         val equinox: String?
 )
+
+fun createNearEarthDataObjectFromNeoObject(nearEarthObject: NearEarthObject?): NearEarthObjectData {
+        return NearEarthObjectData(
+            neoReferenceId = nearEarthObject?.neoRefId,
+            name = nearEarthObject?.name,
+            nasaJplUrl = nearEarthObject?.nasaJplUrl,
+            absoluteMagnitudeH = nearEarthObject?.absoluteMagnitudeH,
+            estimatedDiameterKmMin = nearEarthObject
+                ?.estimatedDiameter
+                ?.kilometers
+                ?.estimatedKmDiameterMin,
+            isPotentiallyHazardousAsteroid = nearEarthObject?.isPotentiallyHazardousAsteroid,
+            closeApproachDt = if (nearEarthObject?.closestApproachData?.isEmpty()!!) null else nearEarthObject.closestApproachData[0].closeApproachDate,
+            epochDateCloseApproach = if (nearEarthObject.closestApproachData.isEmpty()) null else nearEarthObject.closestApproachData[0].epochDateCloseApproach,
+            relativeVelocityKmps = if (nearEarthObject.closestApproachData.isEmpty()) null else nearEarthObject.closestApproachData[0].relativeVelocity.kmps,
+            relativeVelocityKmph = if (nearEarthObject.closestApproachData.isEmpty()) null else nearEarthObject.closestApproachData[0].relativeVelocity.kmph,
+            relativeVelocityMph = if (nearEarthObject.closestApproachData.isEmpty()) null else nearEarthObject.closestApproachData[0].relativeVelocity.mph,
+            missDistanceAstronomical = if (nearEarthObject.closestApproachData.isEmpty()) null else nearEarthObject.closestApproachData[0].missDistance.astronomical,
+            missDistanceLunar = if (nearEarthObject.closestApproachData.isEmpty()) null else nearEarthObject.closestApproachData[0].missDistance.lunar,
+            missDistanceKm = if (nearEarthObject.closestApproachData.isEmpty()) null else nearEarthObject.closestApproachData[0].missDistance.kilometers,
+            missDistanceMiles = if (nearEarthObject.closestApproachData.isEmpty()) null else nearEarthObject.closestApproachData[0].missDistance.miles,
+            orbitingBody = if (nearEarthObject.closestApproachData.isEmpty()) null else nearEarthObject.closestApproachData[0].orbitingBody,
+            orbitId = nearEarthObject.orbitalData?.orbitId,
+            orbitDeterminationDt = nearEarthObject.orbitalData?.orbitDeterminationDate,
+            orbitUncertainity = nearEarthObject.orbitalData?.orbitUncertainity,
+            minOrbitIntersection = nearEarthObject.orbitalData?.minOrbitIntersection,
+            jupiterTisserandInvariant = nearEarthObject.orbitalData?.jupiterTisserandInvariant,
+            epochOsculation = nearEarthObject.orbitalData?.epochOsculation,
+            eccentricity = nearEarthObject.orbitalData?.eccentricity,
+            semiMajorAxis = nearEarthObject.orbitalData?.semiMajorAxis,
+            inclination = nearEarthObject.orbitalData?.inclination,
+            ascendingNodeLongitude = nearEarthObject.orbitalData?.ascendingNodeLongitude,
+            orbitalPeriod = nearEarthObject.orbitalData?.orbitalPeriod,
+            perihelionDistance = nearEarthObject.orbitalData?.perihelionDistance,
+            perihelionArgument = nearEarthObject.orbitalData?.periHelionArgument,
+            aphelionDistance = nearEarthObject.orbitalData?.aphelionDistance,
+            perihelionTime = nearEarthObject.orbitalData?.perihelionTime,
+            meanAnomaly = nearEarthObject.orbitalData?.meanAnomaly,
+            meanMotion = nearEarthObject.orbitalData?.meanMotion,
+            equinox = nearEarthObject.orbitalData?.equinox
+        )
+}

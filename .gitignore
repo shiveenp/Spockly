@@ -1,0 +1,18 @@
+# Created by .ignore support plugin (hsz.mobi)
+.DS_Store
+.gradle/
+.idea/compiler.xml
+.idea/gradle.xml
+.idea/libraries/
+.idea/misc.xml
+.idea/modules.xml
+.idea/modules/
+.idea/sonarlint/
+.idea/vcs.xml
+.idea/workspace.xml
+NeoManager/.DS_Store
+NeoManager/out/
+build/
+gradle/
+spockly.iml
+/spockly-ui/node_modules/

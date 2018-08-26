@@ -7,13 +7,13 @@ import com.shiveenp.neo.models.NeoWithPageMetadata
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestTemplate
-import org.springframework.web.reactive.function.BodyInserter
 import org.springframework.web.reactive.function.server.ServerRequest
 import org.springframework.web.reactive.function.server.ServerResponse
 import org.springframework.web.reactive.function.server.ServerResponse.ok
 import org.springframework.web.reactive.function.server.bodyToServerSentEvents
 import reactor.core.publisher.Mono
 import reactor.core.publisher.toMono
+import javax.transaction.Transactional
 
 @Service
 class NeoService(
@@ -22,11 +22,35 @@ class NeoService(
         val nearEarthObjectRepository: NearEarthObjectRepository) {
     companion object {
         const val START_PAGE = "0"
+        val logger = LoggerFactory.getLogger(NeoService::class.java.name)
     }
-//
-//    fun getNeoById(id: String): NearEarthObject? {
-//        return restTemplate.getForObject(neoUriService.getNeoDataByIdUri(id), NearEarthObject::class.java)
-//    }
+
+    fun iterateAndSaveAllNeo(): Mono<String> {
+        logger.info("Starting indexing")
+        val neoWithMetadata = restTemplate.getForObject(neoUriService.getNeoBrowseUriByPage(NeoService.START_PAGE), NeoWithPageMetadata::class.java)
+        try {
+            for (i in 1..neoWithMetadata!!.page?.totalPages!!)  {
+                retrieveAndSavePage(i)
+            }
+        } catch (e: Exception) {
+            NeoService.logger.error("Unable to index all neos due to", e)
+        }
+        return Mono.empty<String>()
+    }
+
+    @Transactional
+    fun retrieveAndSavePage(pageNumber: Int) {
+        val neoWithPageMetadata = restTemplate.getForObject(neoUriService.getNeoBrowseUriByPage(pageNumber.toString()), NeoWithPageMetadata::class.java)
+        neoWithPageMetadata.nearEarthObjects?.forEach {
+            logger.info("Object saved in db is: $it")
+            saveNeoInDbByObject(it)
+        }
+    }
+
+    fun saveNeoInDbByObject(nearEarthObject: NearEarthObject) {
+        nearEarthObjectRepository.save(com.shiveenp.jpa.createNearEarthDataObjectFromNeoObject(nearEarthObject))
+    }
+
 
     fun getNeoById(request: ServerRequest): Mono<ServerResponse> {
         val id = request.pathVariable("id")
@@ -35,49 +59,19 @@ class NeoService(
                 restTemplate.getForObject(neoUriService.getNeoDataByIdUri(id), NearEarthObject::class.java).toMono())
     }
 
-    fun saveNeoInTheDbById(id: String) {
-        val nearEarthObjectData: NearEarthObjectData? = createNearEarthDataObjectFromNeoObject(restTemplate.getForObject(neoUriService.getNeoDataByIdUri(id), NearEarthObject::class.java))
-        val nearEarthObjectSaved = nearEarthObjectRepository.save(nearEarthObjectData)
-    }
 
-    fun saveNeoInDbByObject(nearEarthObject: NearEarthObject) {
-        val nearEarthObjectSaved = nearEarthObjectRepository.save(createNearEarthDataObjectFromNeoObject(nearEarthObject))
-        LOG.info("NearEarthObject saved in the db is {}", nearEarthObjectSaved)
-    }
-
-    fun getNeoByPageNumber(pageNumber: String): NeoWithPageMetadata {
-        return restTemplate.getForObject(neoUriService.getNeoBrowseUriByPage(pageNumber), NeoWithPageMetadata::class.java)
-    }
-
-    /**
-     * Iterates through all neo links and saves them in the database
-     */
-    fun iterateAndSaveAllNeo() {
-        val neoWithMetadata = restTemplate.getForObject(neoUriService.getNeoBrowseUriByPage(START_PAGE), NeoWithPageMetadata::class.java)
-        for (i in 1..neoWithMetadata.page?.totalPages!!) {
-            retrieveAndSavePage(i)
-        }
-    }
-
-    fun retrieveAndSavePage(pageNumber: Int) {
-        val neoWithPageMetadata = restTemplate.getForObject(neoUriService.getNeoBrowseUriByPage(pageNumber.toString()), NeoWithPageMetadata::class.java)
-        neoWithPageMetadata.nearEarthObjects?.forEach {
-            saveNeoInDbByObject(it)
-        }
-    }
-
-    fun createNearEarthDataObjectFromNeoObject(nearEarthObject: NearEarthObject): NearEarthObjectData {
+    fun createNearEarthDataObjectFromNeoObject(nearEarthObject: NearEarthObject?): NearEarthObjectData {
         return NearEarthObjectData(
-                neoReferenceId = nearEarthObject.neoRefId,
-                name = nearEarthObject.name,
-                nasaJplUrl = nearEarthObject.nasaJplUrl,
-                absoluteMagnitudeH = nearEarthObject.absoluteMagnitudeH,
+                neoReferenceId = nearEarthObject?.neoRefId,
+                name = nearEarthObject?.name,
+                nasaJplUrl = nearEarthObject?.nasaJplUrl,
+                absoluteMagnitudeH = nearEarthObject?.absoluteMagnitudeH,
                 estimatedDiameterKmMin = nearEarthObject
-                        .estimatedDiameter
+                        ?.estimatedDiameter
                         ?.kilometers
                         ?.estimatedKmDiameterMin,
-                isPotentiallyHazardousAsteroid = nearEarthObject.isPotentiallyHazardousAsteroid,
-                closeApproachDt = if (nearEarthObject.closestApproachData?.isEmpty()!!) null else nearEarthObject.closestApproachData[0].closeApproachDate,
+                isPotentiallyHazardousAsteroid = nearEarthObject?.isPotentiallyHazardousAsteroid,
+                closeApproachDt = if (nearEarthObject?.closestApproachData?.isEmpty()!!) null else nearEarthObject.closestApproachData[0].closeApproachDate,
                 epochDateCloseApproach = if (nearEarthObject.closestApproachData.isEmpty()) null else nearEarthObject.closestApproachData[0].epochDateCloseApproach,
                 relativeVelocityKmps = if (nearEarthObject.closestApproachData.isEmpty()) null else nearEarthObject.closestApproachData[0].relativeVelocity.kmps,
                 relativeVelocityKmph = if (nearEarthObject.closestApproachData.isEmpty()) null else nearEarthObject.closestApproachData[0].relativeVelocity.kmph,

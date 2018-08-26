@@ -1,6 +1,17 @@
 POST http://localhost:8080/saveAllNeoInDb
 Accept: */*
 Cache-Control: no-cache
-
 ###
 
+POST http://localhost:8080/api/neo/index
+Accept: */*
+Cache-Control: no-cache
+###
+
+GET http://localhost:12000/commonPoolController
+Accept: application/json
+###
+
+GET http://localhost:8080/commonPoolController
+Accept: application/json
+###
