@@ -15,6 +15,7 @@ plugins {
     id 'java'
     id "org.jetbrains.kotlin.plugin.spring" version "1.2.50"
     id 'org.springframework.boot' version '2.0.2.RELEASE'
+    id 'com.google.cloud.tools.jib' version '0.9.9'
 }
 
 group 'com.shiveenp'
@@ -27,7 +28,6 @@ apply plugin: 'io.spring.dependency-management'
 apply plugin: 'docker'
 apply plugin: 'kotlin-noarg'
 apply plugin: 'kotlin-jpa'
-
 
 sourceCompatibility = 1.8
 
