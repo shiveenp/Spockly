@@ -13,6 +13,5 @@
 NeoManager/.DS_Store
 NeoManager/out/
 build/
-gradle/
 spockly.iml
 /spockly-ui/node_modules/
