@@ -10,9 +10,7 @@ import org.springframework.web.client.RestTemplate
 import org.springframework.web.reactive.function.server.ServerRequest
 import org.springframework.web.reactive.function.server.ServerResponse
 import org.springframework.web.reactive.function.server.ServerResponse.ok
-import org.springframework.web.reactive.function.server.bodyToServerSentEvents
 import reactor.core.publisher.Mono
-import reactor.core.publisher.toMono
 import javax.transaction.Transactional
 
 @Service
@@ -55,8 +53,8 @@ class NeoService(
     fun getNeoById(request: ServerRequest): Mono<ServerResponse> {
         val id = request.pathVariable("id")
         return ok()
-            .bodyToServerSentEvents(
-                restTemplate.getForObject(neoUriService.getNeoDataByIdUri(id), NearEarthObject::class.java).toMono())
+            .body(restTemplate
+                .getForObject(neoUriService.getNeoDataByIdUri(id), NearEarthObject::class.java))
     }
 
 
