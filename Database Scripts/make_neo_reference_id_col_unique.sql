@@ -1,1 +1,0 @@
-ALTER TABLE near_earth_object ADD UNIQUE (neo_reference_id);
