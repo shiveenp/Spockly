@@ -15,4 +15,4 @@ NeoManager/out/
 build/
 spockly.iml
 /spockly-ui/node_modules/
-/frontend/node_modules
+/ui/node_modules
