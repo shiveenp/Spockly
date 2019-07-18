@@ -1,12 +1,10 @@
 import org.http4k.core.*
+import org.http4k.server.Netty
+import org.http4k.server.asServer
 
 fun main() {
 
     val app: HttpHandler = { request: Request -> Response(Status.OK).body("Hello, ${request.query("name")}!") }
 
-    val request = Request(Method.GET, "/").query("name", "John Doe")
-
-    val response = app(request)
-
-    println(response)
+    app.asServer(Netty(9000)).start()
 }
